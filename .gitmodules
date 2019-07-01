@@ -1,0 +1,3 @@
+[submodule "ReedSolomonCCSDS"]
+	path = ReedSolomonCCSDS
+	url = git@github.com:crozone/ReedSolomonCCSDS.git
