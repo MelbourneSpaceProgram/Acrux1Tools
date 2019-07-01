@@ -1,0 +1,66 @@
+﻿@model Acrux1Tools.Web.Models.Fec.DecodeViewModel
+
+@{
+    ViewData["Title"] = "FecDecode";
+}
+
+<h1>Decode</h1>
+<h2>Reed solomon 255, 223 decode</h2>
+
+<form asp-action="Decode">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="HexPayloadOriginal" HexPayloadOriginal class="control-label"></label>
+        <input asp-for="HexPayloadOriginal" class="form-control" />
+        <span asp-validation-for="HexPayloadOriginal" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PreambleCount" class="control-label"></label>
+        <input asp-for="PreambleCount" class="form-control" />
+        <span asp-validation-for="PreambleCount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PaddingCount" class="control-label"></label>
+        <input asp-for="PaddingCount" class="form-control" />
+        <span asp-validation-for="PaddingCount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DualBasis" class="control-label"></label>
+        <input asp-for="DualBasis" class="form-control" />
+        <span asp-validation-for="DualBasis" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Decode" class="btn btn-default" />
+    </div>
+</form>
+
+<div>
+    <h4>Result:</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Error)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Error)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ErrorsCorrectedCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ErrorsCorrectedCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HexPayloadUncorrected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HexPayloadUncorrected)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HexPayloadCorrected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HexPayloadCorrected)
+        </dd>
+    </dl>
+</div>

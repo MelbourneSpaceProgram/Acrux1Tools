@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Acrux1Tools.Models;
+using Acrux1Tools.Web.Models;
 
-namespace Acrux1Tools.Controllers
+namespace Acrux1Tools.Web.Controllers
 {
     public class HomeController : Controller
     {

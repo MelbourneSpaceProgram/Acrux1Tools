@@ -1,12 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Acrux1Tools.Helpers
+namespace Acrux1Tools.Web.Helpers
 {
     public class HexHelpers
     {
+        public static string ByteArrayToHexString(Span<byte> bytes)
+        {
+            StringBuilder hex = new StringBuilder(bytes.Length * 3);
+            foreach (byte b in bytes)
+            {
+                hex.AppendFormat("{0:X2}", b);
+                hex.Append(" ");
+            }
+            return hex.ToString();
+        }
+
         public static IEnumerable<byte> HexadecimalStringToBytes(string hex)
         {
             if (hex == null)

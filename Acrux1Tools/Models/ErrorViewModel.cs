@@ -1,6 +1,6 @@
 using System;
 
-namespace Acrux1Tools.Models
+namespace Acrux1Tools.Web.Models
 {
     public class ErrorViewModel
     {
