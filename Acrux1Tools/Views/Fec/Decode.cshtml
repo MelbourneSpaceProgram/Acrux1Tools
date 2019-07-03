@@ -1,7 +1,7 @@
 ﻿@model Acrux1Tools.Web.Models.Fec.DecodeViewModel
 
 @{
-    ViewData["Title"] = "FecDecode";
+    ViewData["Title"] = "Decode";
 }
 
 <h1>Decode</h1>
@@ -10,19 +10,19 @@
 <form asp-action="Decode">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        <label asp-for="HexPayloadOriginal" HexPayloadOriginal class="control-label"></label>
-        <input asp-for="HexPayloadOriginal" class="form-control" />
+        <label asp-for="HexPayloadOriginal" class="control-label"></label>
+        <textarea asp-for="HexPayloadOriginal" class="form-control"></textarea>
         <span asp-validation-for="HexPayloadOriginal" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="PreambleCount" class="control-label"></label>
-        <input asp-for="PreambleCount" class="form-control" />
-        <span asp-validation-for="PreambleCount" class="text-danger"></span>
+        <label asp-for="PreambleLength" class="control-label"></label>
+        <input asp-for="PreambleLength" class="form-control" />
+        <span asp-validation-for="PreambleLength" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="PaddingCount" class="control-label"></label>
-        <input asp-for="PaddingCount" class="form-control" />
-        <span asp-validation-for="PaddingCount" class="text-danger"></span>
+        <label asp-for="VirtualFillLength" class="control-label"></label>
+        <input asp-for="VirtualFillLength" class="form-control" />
+        <span asp-validation-for="VirtualFillLength" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="DualBasis" class="control-label"></label>
@@ -30,7 +30,7 @@
         <span asp-validation-for="DualBasis" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Decode" class="btn btn-default" />
+        <input type="submit" value="Decode" class="btn btn-primary" />
     </div>
 </form>
 
@@ -38,12 +38,15 @@
     <h4>Result:</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Error)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Error)
-        </dd>
+        @if (Model.Error != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Error)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Error)
+            </dd>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.ErrorsCorrectedCount)
         </dt>
@@ -51,16 +54,28 @@
             @Html.DisplayFor(model => model.ErrorsCorrectedCount)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.HexPayloadUncorrected)
+            @Html.DisplayNameFor(model => model.PayloadUncorrected)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.HexPayloadUncorrected)
+            @Html.DisplayFor(model => model.PayloadUncorrected, null, null, new { compareArray = Model.PayloadCorrected, defaultStyleClass = "text-body", diffStyleClass = "text-white bg-danger" })
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.HexPayloadCorrected)
+            @Html.DisplayNameFor(model => model.PayloadCorrected)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.HexPayloadCorrected)
+            @Html.DisplayFor(model => model.PayloadCorrected, null, null, new { compareArray = Model.PayloadUncorrected, defaultStyleClass = "text-body", diffStyleClass = "text-white bg-success" })
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockUncorrected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BlockUncorrected, null, null, new { compareArray = Model.BlockCorrected, defaultStyleClass = "text-body", diffStyleClass = "text-white bg-danger" })
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockCorrected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BlockCorrected, null, null, new { compareArray = Model.BlockUncorrected, defaultStyleClass = "text-body", diffStyleClass = "text-white bg-success" })
         </dd>
     </dl>
 </div>

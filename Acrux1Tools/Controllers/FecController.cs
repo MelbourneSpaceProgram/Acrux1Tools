@@ -23,6 +23,12 @@ namespace Acrux1Tools.Web.Controllers
         [ActionName(nameof(Decode))]
         public IActionResult FecDecodePost(DecodeViewModel viewModel)
         {
+            if(!ModelState.IsValid)
+            {
+                viewModel.Error = "Input errors";
+                return View(viewModel);
+            }
+
             viewModel.Error = null;
 
             if (string.IsNullOrWhiteSpace(viewModel.HexPayloadOriginal))
@@ -31,37 +37,56 @@ namespace Acrux1Tools.Web.Controllers
                 return View(viewModel);
             }
 
-            byte[] inputPayload = HexadecimalStringToByteArray(viewModel.HexPayloadOriginal);
+            Span<byte> inputPayload = HexadecimalStringToByteArray(viewModel.HexPayloadOriginal);
 
-            if (viewModel.PreambleCount < 0)
+            if (viewModel.PreambleLength < 0)
             {
-                viewModel.Error = $"Preamble count {viewModel.PreambleCount} was less than 0";
+                viewModel.Error = $"Preamble count {viewModel.PreambleLength} was less than 0";
                 return View(viewModel);
             }
 
-            if (viewModel.PreambleCount > inputPayload.Length)
+            if(viewModel.VirtualFillLength < 0)
             {
-                viewModel.Error = $"Preamble count {viewModel.PreambleCount} was larger than block size {inputPayload.Length}";
+                viewModel.Error = $"Virtual fill count {viewModel.VirtualFillLength} was less than 0";
                 return View(viewModel);
             }
 
-            if (inputPayload.Length - viewModel.PreambleCount < Rs8.BlockLength)
+            int inputBlockLengthCalculated = inputPayload.Length - viewModel.PreambleLength + viewModel.VirtualFillLength;
+
+            if (inputBlockLengthCalculated != Rs8.BlockLength)
             {
-                viewModel.Error = $"Block was less than {Rs8.BlockLength} bytes";
+                viewModel.Error = $"Payload ({inputPayload.Length}) - Preamble ({viewModel.PreambleLength}) + Virtual fill ({viewModel.VirtualFillLength}) must equal block length ({inputBlockLengthCalculated} != {Rs8.BlockLength})";
                 return View(viewModel);
             }
 
             // Remove preamble from decode
             //
-            Span<byte> mainPayload = inputPayload.AsSpan(viewModel.PreambleCount, 255);
 
-            viewModel.HexPayloadUncorrected = ByteArrayToHexString(mainPayload);
+            Span<byte> inputAfterPreamble = inputPayload.Slice(viewModel.PreambleLength);
+            Span<byte> mainBlock = stackalloc byte[Rs8.BlockLength];
+            Span<byte> mainBlockData = mainBlock.Slice(viewModel.VirtualFillLength);
 
-            Span<byte> correctedPayload = new byte[mainPayload.Length];
-            mainPayload.CopyTo(correctedPayload);
+            // Copy the input data after the preamble to the post-virtual-fill region of the data block
+            //
+            inputAfterPreamble.CopyTo(mainBlockData);
+            
+            // Save state before decode
+            //
+            viewModel.PayloadUncorrected = inputPayload.ToArray();
+            viewModel.BlockUncorrected = mainBlock.ToArray();
 
-            viewModel.ErrorsCorrectedCount = Rs8.Decode(correctedPayload, null, viewModel.DualBasis);
-            viewModel.HexPayloadCorrected = ByteArrayToHexString(correctedPayload);
+            // Decode the block
+            //
+            viewModel.ErrorsCorrectedCount = Rs8.Decode(mainBlock, null, viewModel.DualBasis);
+
+            // Copy the decoded data back after the original preamble
+            //
+            mainBlockData.CopyTo(inputAfterPreamble);
+
+            // Save decoded state
+            //
+            viewModel.PayloadCorrected = inputPayload.ToArray();
+            viewModel.BlockCorrected = mainBlock.ToArray();
 
             if (viewModel.ErrorsCorrectedCount < 0)
             {
