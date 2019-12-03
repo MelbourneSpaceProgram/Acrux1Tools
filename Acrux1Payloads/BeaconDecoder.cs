@@ -9,10 +9,10 @@ namespace Acrux1Payloads
 {
     public static class BeaconDecoder
     {
-        public static double VoltageMaxValue = 20;
-        public static double CurrentMaxValue = 20;
-        public static double TemperatureMaxValue = 128;
-
+        public static readonly double VoltageMaxValue = 20;
+        public static readonly double CurrentMaxValue = 20;
+        public static readonly double TemperatureMaxValue = 128;
+        public static readonly short ShortErrorFloorValue = short.MinValue + 1;
 
         public static BeaconData DecodeBeacon(byte[] payload)
         {
@@ -33,7 +33,7 @@ namespace Acrux1Payloads
                 return null;
             }
 
-            return new BeaconData()
+            var beaconData = new BeaconData()
             {
                 DestinationCallsign = decodedBeacon.Ax25Frame.Ax25Header.DestCallsignRaw.CallsignRor.Callsign,
                 DestinationSsid = decodedBeacon.Ax25Frame.Ax25Header.DestSsidRaw.Ssid,
@@ -80,10 +80,12 @@ namespace Acrux1Payloads
                 Swsequence = mspPayload.Swsequence,
                 Outreachmessage = mspPayload.Outreachmessage,
             };
+
+            return beaconData;
         }
 
-        private static double ShortToVoltage(short voltageRaw) => (double)voltageRaw * VoltageMaxValue / short.MaxValue;
-        private static double ShortToCurrent(short voltageRaw) => (double)voltageRaw * CurrentMaxValue / short.MaxValue;
-        private static double ShortToTemperature(short voltageRaw) => (double)voltageRaw * TemperatureMaxValue / short.MaxValue;
+        private static double? ShortToVoltage(short voltageRaw) => voltageRaw <= ShortErrorFloorValue ? (double?)null : voltageRaw * VoltageMaxValue / short.MaxValue;
+        private static double? ShortToCurrent(short currentRaw) => currentRaw <= ShortErrorFloorValue ? (double?)null : currentRaw * CurrentMaxValue / short.MaxValue;
+        private static double? ShortToTemperature(short temperatureRaw) => temperatureRaw <= ShortErrorFloorValue ? (double?)null : temperatureRaw * TemperatureMaxValue / short.MaxValue;
     }
 }
