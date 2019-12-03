@@ -8,7 +8,7 @@ namespace SatnogsApi
 {
     public static class ISatnogsApiExtensions
     {
-        public static async Task<List<TelemetryEntry>> GetAllTelemetry(this ISatnogsApi satnogsApi, int satelliteId, int maxPages = 256, int concurrentPages = 16)
+        public static async Task<List<TelemetryEntry>> GetAllTelemetry(this ISatnogsApi satnogsApi, int satelliteId, int maxPages = 1024, int concurrentPages = 16)
         {
             List<TelemetryEntry> telemetry = new List<TelemetryEntry>();
 

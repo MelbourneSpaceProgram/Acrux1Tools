@@ -16,6 +16,9 @@ namespace Acrux1Tools.Web.Helpers
                 return new FecDecodeResult()
                 {
                     Succeess = false,
+                    PreambleLength = preambleLength,
+                    VirtualFillLength = virtualFillLength,
+                    DualBasis = dualBasis,
                     Error = "Packet was empty"
                 };
             }
@@ -29,6 +32,9 @@ namespace Acrux1Tools.Web.Helpers
         {
             FecDecodeResult result = new FecDecodeResult
             {
+                PreambleLength = preambleLength,
+                VirtualFillLength = virtualFillLength,
+                DualBasis = dualBasis,
                 PayloadUncorrected = inputPayload.ToArray()
             };
 
