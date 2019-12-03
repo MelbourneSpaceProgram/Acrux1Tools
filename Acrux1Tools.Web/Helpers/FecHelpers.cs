@@ -27,7 +27,11 @@ namespace Acrux1Tools.Web.Helpers
 
         public static FecDecodeResult DecodePayload(Span<byte> inputPayload, int preambleLength, int virtualFillLength, bool dualBasis)
         {
-            FecDecodeResult result = new FecDecodeResult();
+            FecDecodeResult result = new FecDecodeResult
+            {
+                PayloadUncorrected = inputPayload.ToArray()
+            };
+
             if (preambleLength < 0)
             {
                 result.Succeess = false;
@@ -64,7 +68,6 @@ namespace Acrux1Tools.Web.Helpers
 
             // Save state before decode
             //
-            result.PayloadUncorrected = inputPayload.ToArray();
             result.BlockUncorrected = mainBlock.ToArray();
 
             // Decode the block

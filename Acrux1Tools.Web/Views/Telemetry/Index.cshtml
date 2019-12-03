@@ -13,7 +13,14 @@
             <th>FEC Corrections</th>
             <th>Observer</th>
             <th>Timestamp</th>
-            <th>Data</th>
+            <th>Src Callsign</th>
+            <th>Dst Callsign</th>
+            <th>TX Count</th>
+            <th>RX Count</th>
+            <th>RX Valid</th>
+            <th>SW Sequence</th>
+            <th>EPS Bat 1 (V)</th>
+            <th>EPS Bat 2 (V)</th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +38,30 @@
             </td>
             <td>
                 @item.SatnogsTelemetry.Timestamp
+            </td>
+            <td>
+                @item.Acrux1Beacon.Ax25Frame.Ax25Header.SrcCallsignRaw.CallsignRor.Callsign
+            </td>
+            <td>
+                @item.Acrux1Beacon.Ax25Frame.Ax25Header.DestCallsignRaw.CallsignRor.Callsign
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.TxCount)
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxCount)
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxValid)
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Swsequence)
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv1)
+            </td>
+            <td>
+                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv2)
             </td>
         </tr>
         }

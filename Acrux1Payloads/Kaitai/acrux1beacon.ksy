@@ -1,6 +1,6 @@
-﻿---
 meta:
-  id: acrux1
+  id: acrux1beacon
+  title: Acrux 1 Beacon
   endian: le
 doc: |
   :field dest_callsign: ax25_frame.ax25_header.dest_callsign_raw.callsign_ror.callsign
@@ -51,54 +51,54 @@ doc: |
 
 seq:
   - id: ax25_frame
-    type: ax25_frame
+    type: ax25_frame_descriptor
     doc-ref: 'https://www.tapr.org/pub_ax25.html'
 
 types:
-  ax25_frame:
+  ax25_frame_descriptor:
     seq:
       - id: ax25_header
-        type: ax25_header
+        type: ax25_header_descriptor
       - id: payload
         type:
           switch-on: ax25_header.ctl & 0x13
           cases:
-            0x03: ui_frame
-            0x13: ui_frame
-            0x00: i_frame
-            0x02: i_frame
-            0x10: i_frame
-            0x12: i_frame
-            # 0x11: s_frame
+            0x03: ui_frame_descriptor
+            0x13: ui_frame_descriptor
+            0x00: i_frame_descriptor
+            0x02: i_frame_descriptor
+            0x10: i_frame_descriptor
+            0x12: i_frame_descriptor
+            # 0x11: s_frame_descriptor
 
-  ax25_header:
+  ax25_header_descriptor:
     seq:
       - id: dest_callsign_raw
-        type: callsign_raw
+        type: callsign_raw_descriptor
       - id: dest_ssid_raw
-        type: ssid_mask
+        type: ssid_mask_descriptor
       - id: src_callsign_raw
-        type: callsign_raw
+        type: callsign_raw_descriptor
       - id: src_ssid_raw
-        type: ssid_mask
+        type: ssid_mask_descriptor
       - id: ctl
         type: u1
 
-  callsign_raw:
+  callsign_raw_descriptor:
     seq:
       - id: callsign_ror
         process: ror(1)
         size: 6
-        type: callsign
+        type: callsign_descriptor
 
-  callsign:
+  callsign_descriptor:
     seq:
       - id: callsign
         type: str
         encoding: ASCII
         size: 6
 
-  ssid_mask:
+  ssid_mask_descriptor:
     seq:
       - id: ssid_mask
         type: u1
@@ -106,25 +106,25 @@ types:
       ssid:
         value: (ssid_mask & 0x0f) >> 1
 
-  i_frame:
+  i_frame_descriptor:
     seq:
       - id: pid
         type: u1
       - id: ax25_info
         size-eos: true
 
-  ui_frame:
+  ui_frame_descriptor:
     seq:
       - id: pid
         type: u1
       - id: msp_payload
-        type: msp_payload_t
+        type: msp_payload_t_descriptor
       - id: zero_padding
         size: 91
       - id: fec8_rs_checksum
         size: 32
 
-  msp_payload_t:
+  msp_payload_t_descriptor:
     seq:
       - id: tx_count
         type: u1

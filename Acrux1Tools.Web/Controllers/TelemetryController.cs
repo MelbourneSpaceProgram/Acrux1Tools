@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Acrux1Payloads;
 using Acrux1Tools.Web.Helpers;
 using Acrux1Tools.Web.Models.Telemetry;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,15 @@ namespace Acrux1Tools.Web.Controllers
             ListTelemetryViewModel viewModel = new ListTelemetryViewModel()
             {
                 SatelliteId = satId,
-                Telemetry = telemetry.Select(t => new TelemetryRow()
+                Telemetry = telemetry.Select(t =>
                 {
-                    SatnogsTelemetry = t,
-                    FecDecodeResult = FecHelpers.DecodePayload(t.Frame, 16, 0, false)
+                    var fecResult = FecHelpers.DecodePayload(t.Frame, 16, 0, false);
+                    return new TelemetryRow()
+                    {
+                        SatnogsTelemetry = t,
+                        FecDecodeResult = fecResult,
+                        Acrux1Beacon = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected)
+                    };
                 }).ToList()
             };
 
