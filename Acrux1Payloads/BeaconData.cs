@@ -31,28 +31,28 @@ namespace Acrux1Payloads
         public double Epsloadi1 { get; set; }
         public double Epsadcbatv2 { get; set; }
         public double Epsboostini2 { get; set; }
-        public short Epsrail1 { get; set; }
-        public short Epsrail2 { get; set; }
+        public double Epsrail1 { get; set; }
+        public double Epsrail2 { get; set; }
         public double Epstoppanelv { get; set; }
         public double Epstoppaneli { get; set; }
         public double Epst1 { get; set; }
         public double Epst2 { get; set; }
-        public short Xposv { get; set; }
-        public short Xposi { get; set; }
-        public short Xpost1 { get; set; }
-        public short Yposv { get; set; }
-        public short Yposi { get; set; }
-        public short Ypost1 { get; set; }
-        public short Xnegv { get; set; }
-        public short Xnegi { get; set; }
-        public short Xnegt1 { get; set; }
-        public short Ynegv { get; set; }
-        public short Ynegi { get; set; }
-        public short Ynegt1 { get; set; }
-        public short Znegv { get; set; }
-        public short Znegi { get; set; }
-        public short Znegt1 { get; set; }
-        public short Zpost { get; set; }
+        public double Xposv { get; set; }
+        public double Xposi { get; set; }
+        public double Xpost1 { get; set; }
+        public double Yposv { get; set; }
+        public double Yposi { get; set; }
+        public double Ypost1 { get; set; }
+        public double Xnegv { get; set; }
+        public double Xnegi { get; set; }
+        public double Xnegt1 { get; set; }
+        public double Ynegv { get; set; }
+        public double Ynegi { get; set; }
+        public double Ynegt1 { get; set; }
+        public double Znegv { get; set; }
+        public double Znegi { get; set; }
+        public double Znegt1 { get; set; }
+        public double Zpost { get; set; }
         public ulong Cdhtime { get; set; }
         public ulong Swcdhlastreboot { get; set; }
         public int Swsequence { get; set; }
