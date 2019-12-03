@@ -35,5 +35,8 @@ namespace SatnogsApi
         [AliasAs("timestamp")]
         [JsonProperty("timestamp")]
         public DateTimeOffset Timestamp { get; set; }
+
+        [JsonIgnore]
+        public long UnixTimestamp => Timestamp.ToUnixTimeSeconds();
     }
 }
