@@ -23,7 +23,7 @@ namespace Acrux1Tools.Web.Controllers
         [ActionName(nameof(Decode))]
         public IActionResult FecDecodePost(DecodeViewModel viewModel)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 viewModel.Error = "Input errors";
                 return View(viewModel);
@@ -45,7 +45,7 @@ namespace Acrux1Tools.Web.Controllers
                 return View(viewModel);
             }
 
-            if(viewModel.VirtualFillLength < 0)
+            if (viewModel.VirtualFillLength < 0)
             {
                 viewModel.Error = $"Virtual fill count {viewModel.VirtualFillLength} was less than 0";
                 return View(viewModel);
@@ -69,7 +69,7 @@ namespace Acrux1Tools.Web.Controllers
             // Copy the input data after the preamble to the post-virtual-fill region of the data block
             //
             inputAfterPreamble.CopyTo(mainBlockData);
-            
+
             // Save state before decode
             //
             viewModel.PayloadUncorrected = inputPayload.ToArray();
@@ -94,6 +94,19 @@ namespace Acrux1Tools.Web.Controllers
             }
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Encode()
+        {
+            return View(new DecodeViewModel());
+        }
+
+        [HttpPost]
+        [ActionName(nameof(Encode))]
+        public IActionResult FecEncodePost(DecodeViewModel viewModel)
+        {
+            return View();
         }
     }
 }

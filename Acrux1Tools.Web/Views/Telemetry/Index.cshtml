@@ -1,0 +1,38 @@
+﻿@model Acrux1Tools.Web.Models.Telemetry.ListTelemetryViewModel
+
+@{
+    ViewData["Title"] = "Telemetry";
+}
+
+<h1>Telemetry for satellite @Model.SatelliteId</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>FEC Successful</th>
+            <th>FEC Corrections</th>
+            <th>Observer</th>
+            <th>Timestamp</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Telemetry)
+        {
+        <tr>
+            <td>
+                @item.FecDecodeResult.Succeess
+            </td>
+            <td>
+                @item.FecDecodeResult.ErrorsCorrectedCount
+            </td>
+            <td>
+                @item.SatnogsTelemetry.Observer
+            </td>
+            <td>
+                @item.SatnogsTelemetry.Timestamp
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acrux1Tools.Web", "Acrux1Tools\Acrux1Tools.Web.csproj", "{DB70921E-1D69-42CA-A671-B83280A73DD3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReedSolomon", "ReedSolomonCCSDS\ReedSolomon\ReedSolomon.csproj", "{56286304-8AEA-488F-AFCF-D7FAFC0641F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acrux1Payloads", "Acrux1Payloads\Acrux1Payloads.csproj", "{C09A42B2-3BE2-4CEB-BB21-247A05107876}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acrux1Payloads", "Acrux1Payloads\Acrux1Payloads.csproj", "{C09A42B2-3BE2-4CEB-BB21-247A05107876}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatnogsApi", "SatnogsApi\SatnogsApi.csproj", "{C34BA254-3994-4602-A4B1-2654994F9195}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acrux1Tools.Web", "Acrux1Tools.Web\Acrux1Tools.Web.csproj", "{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DB70921E-1D69-42CA-A671-B83280A73DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB70921E-1D69-42CA-A671-B83280A73DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB70921E-1D69-42CA-A671-B83280A73DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB70921E-1D69-42CA-A671-B83280A73DD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56286304-8AEA-488F-AFCF-D7FAFC0641F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{56286304-8AEA-488F-AFCF-D7FAFC0641F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56286304-8AEA-488F-AFCF-D7FAFC0641F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +25,14 @@ Global
 		{C09A42B2-3BE2-4CEB-BB21-247A05107876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C09A42B2-3BE2-4CEB-BB21-247A05107876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C09A42B2-3BE2-4CEB-BB21-247A05107876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34BA254-3994-4602-A4B1-2654994F9195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34BA254-3994-4602-A4B1-2654994F9195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34BA254-3994-4602-A4B1-2654994F9195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34BA254-3994-4602-A4B1-2654994F9195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
