@@ -6,6 +6,8 @@
 
 <h1>Telemetry for satellite @Model.SatelliteId</h1>
 
+<a class="nav-link text-dark" asp-action="DownloadCsv" asp-route-satelliteId="@Model.SatelliteId">Download CSV</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -13,8 +15,8 @@
             <th>FEC Corrections</th>
             <th>Observer</th>
             <th>Timestamp</th>
+            <th>Dest Callsign</th>
             <th>Src Callsign</th>
-            <th>Dst Callsign</th>
             <th>TX Count</th>
             <th>RX Count</th>
             <th>RX Valid</th>
@@ -26,44 +28,44 @@
     <tbody>
         @foreach (var item in Model.Telemetry)
         {
-        <tr>
-            <td>
-                @item.FecDecodeResult.Succeess
-            </td>
-            <td>
-                @item.FecDecodeResult.ErrorsCorrectedCount
-            </td>
-            <td>
-                @item.SatnogsTelemetry.Observer
-            </td>
-            <td>
-                @item.SatnogsTelemetry.Timestamp
-            </td>
-            <td>
-                @item.Acrux1Beacon?.Ax25Frame.Ax25Header.SrcCallsignRaw.CallsignRor.Callsign
-            </td>
-            <td>
-                @item.Acrux1Beacon?.Ax25Frame.Ax25Header.DestCallsignRaw.CallsignRor.Callsign
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.TxCount)
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxCount)
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxValid)
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Swsequence)
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv1)
-            </td>
-            <td>
-                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv2)
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @item.FecDecodeResult.Succeess
+                </td>
+                <td>
+                    @item.FecDecodeResult.ErrorsCorrectedCount
+                </td>
+                <td>
+                    @item.SatnogsTelemetry.Observer
+                </td>
+                <td>
+                    @item.SatnogsTelemetry.Timestamp
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.DestinationCallsign
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.SourceCallsign
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.TxCount
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.RxCount
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.RxValid
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.Swsequence
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.Epsadcbatv1
+                </td>
+                <td>
+                    @item.Acrux1Beacon?.Epsadcbatv2
+                </td>
+            </tr>
         }
     </tbody>
 </table>

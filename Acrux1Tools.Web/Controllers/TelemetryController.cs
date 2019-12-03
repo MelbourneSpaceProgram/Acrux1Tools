@@ -8,6 +8,8 @@ using Acrux1Tools.Web.Models.Telemetry;
 using Microsoft.AspNetCore.Mvc;
 using SatnogsApi;
 using MoreLinq;
+using System.IO;
+using CsvHelper;
 
 namespace Acrux1Tools.Web.Controllers
 {
@@ -24,45 +26,20 @@ namespace Acrux1Tools.Web.Controllers
         {
             int satId = satelliteId ?? 99964;
 
-            List<TelemetryEntry> telemetry = new List<TelemetryEntry>();
-
-            int pagesAtOnce = 16;
-
-            for (int i = 1; i < 256; i+=pagesAtOnce)
-            {
-                var tasks = new List<Task<List<TelemetryEntry>>>();
-
-                for (int j = 0; j < pagesAtOnce; j++) {
-                    var task = satnogsApi.GetTelemetry(satId, i + j);
-                    tasks.Add(task);
-                }
-
-                bool end = false;
-
-                foreach (var task in tasks)
-                {
-                    try
-                    {
-                        telemetry.AddRange(await task);
-                    }
-                    catch (Exception ex) when (ex.Message.Contains("404"))
-                    {
-                        end = true;
-                    }
-                }
-
-                if (end)
-                {
-                    break;
-                }
-            }
-
-            telemetry = telemetry.OrderByDescending(t => t.Timestamp).DistinctBy(t => t.Timestamp).ToList();
-
             ListTelemetryViewModel viewModel = new ListTelemetryViewModel()
             {
                 SatelliteId = satId,
-                Telemetry = telemetry.Select(t =>
+                Telemetry = await GetTelemetryRows(satId)
+            };
+
+            return View(viewModel);
+        }
+
+        private async Task<List<TelemetryRow>> GetTelemetryRows(int satelliteId)
+        {
+            var telemetry = await satnogsApi.GetAllTelemetry(satelliteId);
+
+            return telemetry.Select(t =>
                 {
                     var fecResult = FecHelpers.DecodePayload(t.Frame, 16, 0, false);
                     return new TelemetryRow()
@@ -71,10 +48,35 @@ namespace Acrux1Tools.Web.Controllers
                         FecDecodeResult = fecResult,
                         Acrux1Beacon = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected)
                     };
-                }).ToList()
-            };
+                }).OrderByDescending(tr => tr.SatnogsTelemetry.Timestamp).ToList();
+        }
 
-            return View(viewModel);
+        public async Task<IActionResult> DownloadCsv(int satelliteId)
+        {
+            Stream stream = new MemoryStream();
+
+            var telemetry = (await GetTelemetryRows(satelliteId)).OrderBy(tr => tr.SatnogsTelemetry.Timestamp).ToList();
+
+            if (telemetry.Count <= 0)
+            {
+                return NotFound();
+            }
+
+            // Write the telemetry to the memory stream in CSV format
+            //
+            using (var writer = new StreamWriter(stream, leaveOpen: true))
+            using (var csv = new CsvWriter(writer, new CsvHelper.Configuration.Configuration()
+            {
+                Delimiter = ","
+            }, true))
+            {
+                csv.WriteRecords(telemetry);
+            }
+
+            // Seek the stream back to the beginning
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return File(stream, "text/csv", $"telemetry-{satelliteId}-{DateTimeOffset.Now.ToString("s")}.csv"); // returns a FileStreamResult
         }
     }
 }

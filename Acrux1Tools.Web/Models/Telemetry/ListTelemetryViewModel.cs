@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Acrux1Payloads.Kaitai;
+using Acrux1Payloads;
 using Acrux1Tools.Web.Helpers;
 using SatnogsApi;
 
@@ -21,7 +21,6 @@ namespace Acrux1Tools.Web.Models.Telemetry
         /// </summary>
         public TelemetryEntry SatnogsTelemetry { get; set; }
         public FecDecodeResult FecDecodeResult { get; set; }
-
-        public Acrux1beacon Acrux1Beacon { get; set; }
+        public BeaconData Acrux1Beacon { get; set; }
     }
 }
