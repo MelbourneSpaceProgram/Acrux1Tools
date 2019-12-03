@@ -10,7 +10,14 @@ namespace Acrux1Payloads
     {
         public static Acrux1beacon DecodeBeacon(byte[] payload)
         {
-            return new Acrux1beacon(new KaitaiStream(payload));
+            try
+            {
+                return new Acrux1beacon(new KaitaiStream(payload));
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

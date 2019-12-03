@@ -7,6 +7,7 @@ using Acrux1Tools.Web.Helpers;
 using Acrux1Tools.Web.Models.Telemetry;
 using Microsoft.AspNetCore.Mvc;
 using SatnogsApi;
+using MoreLinq;
 
 namespace Acrux1Tools.Web.Controllers
 {
@@ -23,7 +24,41 @@ namespace Acrux1Tools.Web.Controllers
         {
             int satId = satelliteId ?? 99964;
 
-            List<TelemetryEntry> telemetry = await satnogsApi.GetTelemetry(satId);
+            List<TelemetryEntry> telemetry = new List<TelemetryEntry>();
+
+            int pagesAtOnce = 16;
+
+            for (int i = 1; i < 256; i+=pagesAtOnce)
+            {
+                var tasks = new List<Task<List<TelemetryEntry>>>();
+
+                for (int j = 0; j < pagesAtOnce; j++) {
+                    var task = satnogsApi.GetTelemetry(satId, i + j);
+                    tasks.Add(task);
+                }
+
+                bool end = false;
+
+                foreach (var task in tasks)
+                {
+                    try
+                    {
+                        telemetry.AddRange(await task);
+                    }
+                    catch (Exception ex) when (ex.Message.Contains("404"))
+                    {
+                        end = true;
+                    }
+                }
+
+                if (end)
+                {
+                    break;
+                }
+            }
+
+            telemetry = telemetry.OrderByDescending(t => t.Timestamp).DistinctBy(t => t.Timestamp).ToList();
+
             ListTelemetryViewModel viewModel = new ListTelemetryViewModel()
             {
                 SatelliteId = satId,

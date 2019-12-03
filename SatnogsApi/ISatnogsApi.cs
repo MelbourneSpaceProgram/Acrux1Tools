@@ -8,7 +8,7 @@ namespace SatnogsApi
 {
     public interface ISatnogsApi
     {
-        [Get("/api/telemetry/?format=json&satellite={id}")]
-        Task<List<TelemetryEntry>> GetTelemetry([AliasAs("id")] int satelliteId);
+        [Get("/api/telemetry/?format=json&satellite={satelliteId}&page={page}")]
+        Task<List<TelemetryEntry>> GetTelemetry(int satelliteId, int? page = null);
     }
 }

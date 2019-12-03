@@ -40,28 +40,28 @@
                 @item.SatnogsTelemetry.Timestamp
             </td>
             <td>
-                @item.Acrux1Beacon.Ax25Frame.Ax25Header.SrcCallsignRaw.CallsignRor.Callsign
+                @item.Acrux1Beacon?.Ax25Frame.Ax25Header.SrcCallsignRaw.CallsignRor.Callsign
             </td>
             <td>
-                @item.Acrux1Beacon.Ax25Frame.Ax25Header.DestCallsignRaw.CallsignRor.Callsign
+                @item.Acrux1Beacon?.Ax25Frame.Ax25Header.DestCallsignRaw.CallsignRor.Callsign
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.TxCount)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.TxCount)
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxCount)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxCount)
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxValid)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.RxValid)
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Swsequence)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Swsequence)
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv1)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv1)
             </td>
             <td>
-                @((item.Acrux1Beacon.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv2)
+                @((item.Acrux1Beacon?.Ax25Frame.Payload as Acrux1Payloads.Kaitai.Acrux1beacon.UiFrameDescriptor)?.MspPayload.Epsadcbatv2)
             </td>
         </tr>
         }
