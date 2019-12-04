@@ -37,7 +37,7 @@ namespace Acrux1Tools.Web.Controllers
                 viewModel.PayloadUncorrected = fecResult.PayloadUncorrected;
                 viewModel.BlockUncorrected = fecResult.BlockUncorrected;
                 viewModel.PayloadCorrected = fecResult.PayloadCorrected;
-                viewModel.PayloadUncorrected = fecResult.PayloadUncorrected;
+                viewModel.BlockCorrected = fecResult.BlockCorrected;
                 viewModel.ErrorsCorrectedCount = fecResult.ErrorsCorrectedCount;
             }
             else
