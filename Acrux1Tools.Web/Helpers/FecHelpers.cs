@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ReedSolomon;
@@ -15,7 +16,7 @@ namespace Acrux1Tools.Web.Helpers
             {
                 return new FecDecodeResult()
                 {
-                    Succeess = false,
+                    Success = false,
                     PreambleLength = preambleLength,
                     VirtualFillLength = virtualFillLength,
                     DualBasis = dualBasis,
@@ -40,14 +41,14 @@ namespace Acrux1Tools.Web.Helpers
 
             if (preambleLength < 0)
             {
-                result.Succeess = false;
+                result.Success = false;
                 result.Error = $"Preamble count {preambleLength} was less than 0";
                 return result;
             }
 
             if (virtualFillLength < 0)
             {
-                result.Succeess = false;
+                result.Success = false;
                 result.Error = $"Virtual fill count {virtualFillLength} was less than 0";
                 return result;
             }
@@ -56,7 +57,7 @@ namespace Acrux1Tools.Web.Helpers
 
             if (inputBlockLengthCalculated != Rs8.BlockLength)
             {
-                result.Succeess = false;
+                result.Success = false;
                 result.Error = $"Payload ({inputPayload.Length}) - Preamble ({preambleLength}) + Virtual fill ({virtualFillLength}) must equal block length ({inputBlockLengthCalculated} != {Rs8.BlockLength})";
                 return result;
             }
@@ -91,13 +92,13 @@ namespace Acrux1Tools.Web.Helpers
 
             if (result.ErrorsCorrectedCount < 0)
             {
-                result.Succeess = false;
+                result.Success = false;
                 result.Error = "Too many errors in payload to correct (errors > 16)";
                 return result;
             }
             else
             {
-                result.Succeess = true;
+                result.Success = true;
                 return result;
             }
         }
@@ -105,15 +106,25 @@ namespace Acrux1Tools.Web.Helpers
 
     public class FecDecodeResult
     {
-        public bool Succeess { get; set; }
+        [Display(Name = "FEC successful")]
+        public bool Success { get; set; }
+        [Display(Name = "FEC error")]
         public string Error { get; set; }
+        [Display(Name = "FEC preamble length")]
         public int PreambleLength { get; set; }
+        [Display(Name = "FEC virtual fill length")]
         public int VirtualFillLength { get; set; }
+        [Display(Name = "FEC dual basis")]
         public bool DualBasis { get; set; }
+        [Display(Name = "Payload uncorrected")]
         public byte[] PayloadUncorrected { get; set; }
+        [Display(Name = "Block uncorrected")]
         public byte[] BlockUncorrected { get; set; }
+        [Display(Name = "Payload corrected")]
         public byte[] PayloadCorrected { get; set; }
+        [Display(Name = "Block corrected")]
         public byte[] BlockCorrected { get; set; }
+        [Display(Name = "FEC corrections")]
         public int ErrorsCorrectedCount { get; set; }
     }
 }

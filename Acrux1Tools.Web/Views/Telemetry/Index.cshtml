@@ -4,24 +4,38 @@
     ViewData["Title"] = "Telemetry";
 }
 
-<h1>Telemetry for satellite @Model.SatelliteId</h1>
-<h6>Last updated: @Model.LastUpdated</h6>
+<h1>Telemetry for satellite @Html.DisplayFor(model => model.SatelliteId) - @Html.DisplayFor(model => model.Satellite.Name)</h1>
 
-<a class="nav-link text-dark" asp-action="DownloadCsv" asp-route-satelliteId="@Model.SatelliteId">Download CSV</a>
+@if (Model.Satellite != null)
+{
+    <img src="@Model.Satellite.Image" alt="@Model.Satellite.Name">
+}
+
+<a type="button" title="View on SATNOGS" class="nav-link text-dark" href="https://db.satnogs.org/satellite/@Model.SatelliteId/" target="_blank">
+    View on SATNOGS
+</a>
+
+<h6>Satellite status: @Html.DisplayFor(model => model.Satellite.Status)</h6>
+<h6>Telemetry last updated: @Html.DisplayFor(model => model.LastUpdated)</h6>
+<a class="nav-link text-dark" asp-action="DownloadCsv" asp-route-satelliteId="@Model.SatelliteId">
+    Download full telemetry as CSV
+</a>
 
 <table class="table">
     <thead>
         <tr>
-            <th>FEC Successful</th>
-            <th>FEC Corrections</th>
-            <th>Observer</th>
-            <th>Timestamp</th>
+            <th>@Html.DisplayNameFor(model => model.Telemetry[0].FecDecodeResult.Success)</th>
+            <th>@Html.DisplayNameFor(model => model.Telemetry[0].FecDecodeResult.ErrorsCorrectedCount)</th>
+            <th>@Html.DisplayNameFor(model => model.Telemetry[0].SatnogsTelemetry.Observer)</th>
+            <th>@Html.DisplayNameFor(model => model.Telemetry[0].SatnogsTelemetry.Timestamp)</th>
             <th>Dest Callsign</th>
             <th>Src Callsign</th>
             <th>TX Count</th>
             <th>RX Count</th>
             <th>RX Valid</th>
             <th>SW Sequence</th>
+            <th>CDH Time</th>
+            <th>Last Reboot</th>
             <th>EPS Bat 1 (V)</th>
             <th>EPS Bat 2 (V)</th>
         </tr>
@@ -29,44 +43,50 @@
     <tbody>
         @foreach (var item in Model.Telemetry)
         {
-            <tr>
-                <td>
-                    @item.FecDecodeResult.Succeess
-                </td>
-                <td>
-                    @item.FecDecodeResult.ErrorsCorrectedCount
-                </td>
-                <td>
-                    @item.SatnogsTelemetry.Observer
-                </td>
-                <td>
-                    @item.SatnogsTelemetry.Timestamp
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.DestinationCallsign
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.SourceCallsign
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.TxCount
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.RxCount
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.RxValid
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.Swsequence
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.Epsadcbatv1
-                </td>
-                <td>
-                    @item.Acrux1Beacon?.Epsadcbatv2
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.FecDecodeResult.Success)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.FecDecodeResult.ErrorsCorrectedCount)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.SatnogsTelemetry.Observer)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.SatnogsTelemetry.Timestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.DestinationCallsign)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.SourceCallsign)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.TxCount)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.RxCount)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.RxValid)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.Swsequence)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.Cdhtime)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.Swcdhlastreboot)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.Epsadcbatv1)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Acrux1Beacon.Epsadcbatv2)
+            </td>
+        </tr>
         }
     </tbody>
 </table>

@@ -6,11 +6,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Views\Acrux1\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="12.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.1">

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReedSolomon", "ReedSolomonC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acrux1Payloads", "Acrux1Payloads\Acrux1Payloads.csproj", "{C09A42B2-3BE2-4CEB-BB21-247A05107876}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatnogsApi", "SatnogsApi\SatnogsApi.csproj", "{C34BA254-3994-4602-A4B1-2654994F9195}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatnogsApi", "SatnogsApi\SatnogsApi.csproj", "{C34BA254-3994-4602-A4B1-2654994F9195}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acrux1Tools.Web", "Acrux1Tools.Web\Acrux1Tools.Web.csproj", "{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acrux1Tools.Web", "Acrux1Tools.Web\Acrux1Tools.Web.csproj", "{EFC2B944-7FB8-47F8-92E5-22FF5C4DBD2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

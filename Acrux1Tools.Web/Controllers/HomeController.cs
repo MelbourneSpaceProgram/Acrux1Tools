@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Acrux1Tools.Web.Models;
+using SatnogsApi;
+using Acrux1Tools.Web.Models.Home;
 
 namespace Acrux1Tools.Web.Controllers
 {

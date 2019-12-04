@@ -29,11 +29,16 @@ namespace Acrux1Tools.Web.Controllers
         {
             int satId = satelliteId ?? 99964;
 
-            (var telemetry, var lastUpdated) = await GetTelemetryRows(satId);
+            var getSatellitesTask = GetSatellites(satId);
+            var getTelemetryTask = GetTelemetryRows(satId);
+
+            (var satellites, var satLastUpdated) = await getSatellitesTask;
+            (var telemetry, var lastUpdated) = await getTelemetryTask;
 
             ListTelemetryViewModel viewModel = new ListTelemetryViewModel()
             {
                 SatelliteId = satId,
+                Satellite = satellites.FirstOrDefault(),
                 Telemetry = telemetry,
                 LastUpdated = lastUpdated
             };
@@ -43,7 +48,8 @@ namespace Acrux1Tools.Web.Controllers
 
         private async Task<(List<TelemetryRow> Telemetry, DateTimeOffset LastUpdated)> GetTelemetryRows(int satelliteId)
         {
-            if (memoryCache.TryGetValue(GetCacheKey(satelliteId), out TelemetryCacheEntry cachedTelemetryEntry)) {
+            if (memoryCache.TryGetValue(GetTelemetryCacheKey(satelliteId), out TelemetryCacheEntry cachedTelemetryEntry))
+            {
                 return (cachedTelemetryEntry.Telemetries, cachedTelemetryEntry.Created);
             }
 
@@ -61,9 +67,40 @@ namespace Acrux1Tools.Web.Controllers
                 }).OrderByDescending(tr => tr.SatnogsTelemetry.Timestamp).ToList();
 
             cachedTelemetryEntry = new TelemetryCacheEntry(freshTelemetry);
-            memoryCache.Set(GetCacheKey(satelliteId), cachedTelemetryEntry, TimeSpan.FromMinutes(5));
+            memoryCache.Set(GetTelemetryCacheKey(satelliteId), cachedTelemetryEntry, TimeSpan.FromMinutes(5));
 
             return (cachedTelemetryEntry.Telemetries, cachedTelemetryEntry.Created);
+        }
+
+        private static string GetTelemetryCacheKey(int satelliteId) => $"Telemetry-cache-{satelliteId}";
+        private static string GetSatelliteCacheKey(int? noradCatId) => $"Satellite-cache-{noradCatId?.ToString() ?? "ALL"}";
+
+        private async Task<(List<SatelliteEntry> Satellites, DateTimeOffset LastUpdated)> GetSatellites(int? noradCatId)
+        {
+
+            if (memoryCache.TryGetValue(GetSatelliteCacheKey(noradCatId), out SatelliteCacheEntry satelliteCacheEntry))
+            {
+                return (satelliteCacheEntry.Satellites, satelliteCacheEntry.Created);
+            }
+
+            var satelliteEntries = await satnogsApi.GetSatellites(noradCatId);
+
+            satelliteCacheEntry = new SatelliteCacheEntry(satelliteEntries);
+            memoryCache.Set(GetSatelliteCacheKey(noradCatId), satelliteEntries, TimeSpan.FromMinutes(5));
+
+            return (satelliteCacheEntry.Satellites, satelliteCacheEntry.Created);
+        }
+
+        private class SatelliteCacheEntry
+        {
+            public List<SatelliteEntry> Satellites { get; private set; }
+            public DateTimeOffset Created { get; private set; }
+
+            public SatelliteCacheEntry(List<SatelliteEntry> satellites)
+            {
+                this.Satellites = satellites;
+                this.Created = DateTimeOffset.Now;
+            }
         }
 
         private class TelemetryCacheEntry
@@ -83,8 +120,6 @@ namespace Acrux1Tools.Web.Controllers
                 created = Created;
             }
         }
-
-        private static string GetCacheKey(int satelliteId) => $"Telemetry-cache-{satelliteId}";
 
         public async Task<IActionResult> DownloadCsv(int satelliteId)
         {

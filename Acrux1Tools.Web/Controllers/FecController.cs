@@ -32,7 +32,7 @@ namespace Acrux1Tools.Web.Controllers
 
             var fecResult = FecHelpers.DecodePayload(viewModel.HexPayloadOriginal, viewModel.PreambleLength, viewModel.VirtualFillLength, viewModel.DualBasis);
 
-            if (fecResult.Succeess)
+            if (fecResult.Success)
             {
                 viewModel.PayloadUncorrected = fecResult.PayloadUncorrected;
                 viewModel.BlockUncorrected = fecResult.BlockUncorrected;
