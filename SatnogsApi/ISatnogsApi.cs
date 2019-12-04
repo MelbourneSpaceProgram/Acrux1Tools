@@ -10,5 +10,8 @@ namespace SatnogsApi
     {
         [Get("/api/telemetry/?format=json&satellite={satelliteId}&page={page}")]
         Task<List<TelemetryEntry>> GetTelemetry(int satelliteId, int? page = null);
+
+        [Get("/api/satellites/?norad_cat_id={noradCatId}")]
+        Task<List<SatelliteEntry>> GetSatellites(int? noradCatId);
     }
 }
