@@ -35,10 +35,27 @@ namespace Acrux1Tools.Web.Controllers
             (var satellites, var satLastUpdated) = await getSatellitesTask;
             (var telemetry, var lastUpdated) = await getTelemetryTask;
 
+            SatelliteEntry satellite = satellites.FirstOrDefault();
+
+            // Fixup image URL
+            //
+            try
+            {
+                satellite.Image = new UriBuilder(satellite.Image)
+                {
+                    Scheme = Uri.UriSchemeHttps,
+                    Port = -1
+                }.Uri.ToString();
+            }
+            catch
+            {
+
+            }
+
             ListTelemetryViewModel viewModel = new ListTelemetryViewModel()
             {
                 SatelliteId = satId,
-                Satellite = satellites.FirstOrDefault(),
+                Satellite = satellite,
                 Telemetry = telemetry,
                 LastUpdated = lastUpdated
             };
