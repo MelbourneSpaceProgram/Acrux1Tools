@@ -15,8 +15,18 @@
     View on SATNOGS
 </a>
 
-<h6>Satellite status: @Html.DisplayFor(model => model.Satellite.Status)</h6>
-<h6>Telemetry last updated: @Html.DisplayFor(model => model.LastUpdated)</h6>
+<h6>Satellite is @Html.DisplayFor(model => model.Satellite.Status)</h6>
+<h6>Telemetry last updated @Html.DisplayFor(model => model.LastUpdated)</h6>
+
+@{
+    Acrux1Tools.Web.Models.Telemetry.TelemetryRow latestRow = Model.Telemetry.OrderByDescending(t => t.SatnogsTelemetry.Timestamp).FirstOrDefault();
+}
+
+@if (latestRow != null)
+{
+    <h6>Telemetry last received @Html.DisplayFor(model => latestRow.SatnogsTelemetry.Timestamp) from @Html.DisplayFor(model => latestRow.SatnogsTelemetry.Observer)</h6>
+}
+
 <a class="nav-link text-dark" asp-action="DownloadCsv" asp-route-satelliteId="@Model.SatelliteId">
     Download full telemetry as CSV
 </a>
