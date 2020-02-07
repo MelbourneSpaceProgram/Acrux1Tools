@@ -7,17 +7,13 @@ using Acrux1Payloads;
 using Acrux1Tools.Web.Helpers;
 using Acrux1Tools.Web.Models.Telemetry;
 
-namespace Acrux1Tools.Web.Models.Acrux1
+namespace Acrux1Tools.Web.Models.AcruxPayloads
 {
     public class DecodeViewModel
     {
         [Required]
-        [Display(Name = "Payload Input")]
+        [Display(Name = "Payload Input", Description = "Full hex encoded beacon payload, including 16 byte Ax25 header")]
         public string HexPayloadOriginal { get; set; }
-        [Display(Name = "Preamble Length")]
-        public int PreambleLength { get; set; }
-        [Display(Name = "Error")]
-        public string Error { get; set; }
 
         public FecDecodeResult FecDecodeResult { get; set; }
         public BeaconData Acrux1Beacon { get; set; }

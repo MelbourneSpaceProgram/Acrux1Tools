@@ -1,0 +1,73 @@
+﻿@model Acrux1Tools.Web.Models.AcruxPayloads.DecodeViewModel
+
+@{
+    ViewData["Title"] = "Decode";
+}
+
+<h1>Decode</h1>
+<h2>ACRUX-1 Payload Decode</h2>
+
+<form asp-action="Decode">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="HexPayloadOriginal" class="control-label"></label>
+        <textarea asp-for="HexPayloadOriginal" class="form-control"></textarea>
+        <span asp-validation-for="HexPayloadOriginal" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Decode" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <h4>FEC:</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FecDecodeResult.Success)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FecDecodeResult.Success)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FecDecodeResult.ErrorsCorrectedCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FecDecodeResult.ErrorsCorrectedCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FecDecodeResult.Error)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FecDecodeResult.Error)
+        </dd>
+    </dl>
+</div>
+<div>
+    <h4>Beacon:</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @if (Model.Acrux1Beacon != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Acrux1Beacon)
+            </dt>
+            <dd>
+<pre>
+<code>
+@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Acrux1Beacon, Newtonsoft.Json.Formatting.Indented))
+</code>
+</pre>
+            </dd>
+        }
+        else
+        {
+            <dt>
+                Error
+            </dt>
+            <dd>
+                Beacon could not be decoded.
+            </dd>
+        }
+    </dl>
+</div>

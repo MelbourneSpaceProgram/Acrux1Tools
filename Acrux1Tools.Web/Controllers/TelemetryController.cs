@@ -27,13 +27,26 @@ namespace Acrux1Tools.Web.Controllers
 
         public async Task<IActionResult> Index(int? satelliteId)
         {
-            int satId = satelliteId ?? 99964;
+            int satId = satelliteId ?? 44369;
 
             var getSatellitesTask = GetSatellites(satId);
             var getTelemetryTask = GetTelemetryRows(satId);
 
-            (var satellites, var satLastUpdated) = await getSatellitesTask;
-            (var telemetry, var lastUpdated) = await getTelemetryTask;
+            (List<SatelliteEntry> satellites, DateTimeOffset satLastUpdated) = await getSatellitesTask;
+
+            List<TelemetryRow> telemetry;
+            DateTimeOffset lastUpdated;
+            try
+            {
+                (telemetry, lastUpdated) = await getTelemetryTask;
+            }
+            catch (Exception ex)
+            {
+                telemetry = new List<TelemetryRow>();
+                lastUpdated = default;
+
+                ViewBag.Error = $"Could not get telemetry. {ex.Message}";
+            }
 
             SatelliteEntry satellite = satellites.FirstOrDefault();
 
@@ -75,11 +88,12 @@ namespace Acrux1Tools.Web.Controllers
             List<TelemetryRow> freshTelemetry = telemetryEntries.Select(t =>
                 {
                     var fecResult = FecHelpers.DecodePayload(t.Frame, 16, 0, false);
+                    var beaconDecoded = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected);
                     return new TelemetryRow()
                     {
                         SatnogsTelemetry = t,
                         FecDecodeResult = fecResult,
-                        Acrux1Beacon = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected)
+                        Acrux1Beacon = beaconDecoded
                     };
                 }).OrderByDescending(tr => tr.SatnogsTelemetry.Timestamp).ToList();
 

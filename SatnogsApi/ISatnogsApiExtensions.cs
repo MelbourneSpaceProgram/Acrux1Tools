@@ -28,7 +28,8 @@ namespace SatnogsApi
                 {
                     try
                     {
-                        telemetry.AddRange(await task);
+                        List<TelemetryEntry> telemetryPage = await task;
+                        telemetry.AddRange(telemetryPage);
                     }
                     catch (Exception ex) when (ex.Message.Contains("404"))
                     {
