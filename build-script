@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Build script for ACRUX-1 Tools
+#
+# This builds a self contained application for linux-x64 systems.
+# The first argument is the override for the build output directory.
+
+OUTPUT_DIR="${1}"
+
+echo "Starting ACRUX-1 Tools Build script."
+
+if [ -z ${OUTPUT_DIR} ]
+then
+    echo "Using default build publish directories"
+else
+    echo "Build output directory set as ${OUTPUT_DIR}"
+fi
+
+echo "Building ACRUX-1 Tools ..."
+cd ./Acrux1Tools.Web
+
+if [ -z ${OUTPUT_DIR} ]
+then
+    dotnet publish -c Release -r linux-x64
+else
+    dotnet publish -c Release -r linux-x64 -o "${OUTPUT_DIR}"
+fi
+
+if [ $? -eq 0 ]
+then
+    echo "Build succeeded."
+else
+    echo "Build failed."
+    exit 1
+fi
+
+exit 0
