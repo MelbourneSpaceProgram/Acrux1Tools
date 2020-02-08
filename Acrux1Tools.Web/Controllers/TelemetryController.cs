@@ -11,6 +11,7 @@ using MoreLinq;
 using System.IO;
 using CsvHelper;
 using Microsoft.Extensions.Caching.Memory;
+using System.Globalization;
 
 namespace Acrux1Tools.Web.Controllers
 {
@@ -166,7 +167,7 @@ namespace Acrux1Tools.Web.Controllers
             // Write the telemetry to the memory stream in CSV format
             //
             using (var writer = new StreamWriter(stream, leaveOpen: true))
-            using (var csv = new CsvWriter(writer, new CsvHelper.Configuration.Configuration()
+            using (var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Delimiter = ","
             }, true))
