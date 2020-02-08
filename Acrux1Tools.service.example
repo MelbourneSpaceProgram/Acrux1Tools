@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStart=/home/example-user/builds/Acrux1Tools/Acrux1Tools.Web
-EnvironmentFile=/home/example-user/evs/Acrux1Tools
+EnvironmentFile=/home/example-user/env/Acrux1Tools.env
 Restart=always
 RestartSec=10s
 
