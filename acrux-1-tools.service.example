@@ -1,0 +1,19 @@
+[Unit]
+Description=ACRUX-1 Tools Web (Example)
+After=network.target
+
+[Service]
+ExecStart=/home/example-user/builds/Acrux1Tools/Acrux1Tools.Web
+EnvironmentFile=/home/example-user/evs/Acrux1Tools
+Restart=always
+RestartSec=10s
+
+## Sandbox everything.
+User=example-user
+NoNewPrivileges=true
+
+ReadOnlyDirectories=/
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
