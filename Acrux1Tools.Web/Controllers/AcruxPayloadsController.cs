@@ -12,9 +12,9 @@ namespace Acrux1Tools.Web.Controllers
             return RedirectToAction(nameof(Decode));
         }
 
-        public IActionResult Decode(DecodeViewModel viewModel)
+        public IActionResult Decode()
         {
-            return View(viewModel);
+            return View(new DecodeViewModel());
         }
 
         [HttpPost]
