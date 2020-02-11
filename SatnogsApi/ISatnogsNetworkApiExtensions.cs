@@ -28,10 +28,10 @@ namespace SatnogsApi
             //   This is fast and it works, but it's technically not a supported way to use the API.
             //
             //
-            // We use Multithreaded because it's so, so much quicker.
+            // We use Multithreaded because it's so, so much faster.
             //
 
-            Dictionary<long, ObservationEntry> observations = new Dictionary<long, ObservationEntry>();
+            SortedDictionary<long, ObservationEntry> observations = new SortedDictionary<long, ObservationEntry>();
             HashSet<long> previousObservationIds = previousObservations == null ? null : new HashSet<long>(previousObservations.Select(oe => oe.Id));
 
             if (previousObservations != null)
@@ -90,7 +90,7 @@ namespace SatnogsApi
                 }
             }
 
-            return observations.Values.OrderBy(oe => oe.Id).ToList();
+            return observations.Values.ToList();
         }
     }
 }
