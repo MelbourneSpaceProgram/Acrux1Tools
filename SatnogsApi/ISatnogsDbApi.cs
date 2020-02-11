@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Refit;
+using SatnogsApi.Models.SatnogsDb;
 
 namespace SatnogsApi
 {
-    public interface ISatnogsApi
+    public interface ISatnogsDbApi
     {
         [Get("/api/telemetry/?format=json&satellite={satelliteId}&page={page}")]
         Task<List<TelemetryEntry>> GetTelemetry(int satelliteId, int? page = null);

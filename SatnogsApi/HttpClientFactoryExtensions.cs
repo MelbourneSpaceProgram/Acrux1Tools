@@ -8,10 +8,15 @@ namespace SatnogsApi
 {
     public static class HttpClientFactoryExtensions
     {
-        public static IHttpClientBuilder AddSatnogsClient(this IServiceCollection services)
+        public static IServiceCollection AddSatnogsClients(this IServiceCollection services, Action<IHttpClientBuilder> dbSetup = null, Action<IHttpClientBuilder> networkSetup = null)
         {
-            return services.AddRefitClient<ISatnogsApi>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://db.satnogs.org"));
+            var dbBuilder = services.AddRefitClient<ISatnogsDbApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://db.satnogs.org"));
+            dbSetup?.Invoke(dbBuilder);
+
+            var networkBuilder = services.AddRefitClient<ISatnogsNetworkApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://network.satnogs.org"));
+            networkSetup?.Invoke(networkBuilder);
+
+            return services;
         }
     }
 }

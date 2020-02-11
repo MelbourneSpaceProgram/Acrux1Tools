@@ -5,7 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Refit;
 
-namespace SatnogsApi
+namespace SatnogsApi.Models.SatnogsDb
 {
     public class TelemetryEntry
     {

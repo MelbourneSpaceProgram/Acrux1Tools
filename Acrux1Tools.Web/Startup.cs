@@ -31,7 +31,7 @@ namespace Acrux1Tools.Web
 
             // Add application services
             services.AddControllersWithViews();
-            services.AddSatnogsClient();
+            services.AddSatnogsClients();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SatnogsApi.Models.SatnogsDb;
 
 namespace SatnogsApi
 {
-    public static class ISatnogsApiExtensions
+    public static class ISatnogsDbApiExtensions
     {
-        public static async Task<List<TelemetryEntry>> GetAllTelemetry(this ISatnogsApi satnogsApi, int satelliteId, int maxPages = 1024, int concurrentPages = 16)
+        public static async Task<List<TelemetryEntry>> GetAllTelemetry(this ISatnogsDbApi satnogsApi, int satelliteId, int maxPages = 1024, int concurrentPages = 16)
         {
             List<TelemetryEntry> telemetry = new List<TelemetryEntry>();
 
