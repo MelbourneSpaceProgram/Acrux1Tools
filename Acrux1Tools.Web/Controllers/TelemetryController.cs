@@ -12,23 +12,26 @@ using System.IO;
 using CsvHelper;
 using Microsoft.Extensions.Caching.Memory;
 using System.Globalization;
+using Acrux1Tools.Web.Configuration;
 
 namespace Acrux1Tools.Web.Controllers
 {
     public class TelemetryController : Controller
     {
-        private readonly ISatnogsApi satnogsApi;
+        private readonly ISatnogsDbApi satnogsApi;
         private readonly IMemoryCache memoryCache;
+        private readonly ApplicationSettings settings;
 
-        public TelemetryController(ISatnogsApi satnogsApi, IMemoryCache memoryCache)
+        public TelemetryController(ISatnogsDbApi satnogsApi, IMemoryCache memoryCache, ApplicationSettings settings)
         {
             this.satnogsApi = satnogsApi;
             this.memoryCache = memoryCache;
+            this.settings = settings;
         }
 
         public async Task<IActionResult> Index(int? satelliteId)
         {
-            int satId = satelliteId ?? 44369;
+            int satId = satelliteId ?? settings.DefaultSatelliteId;
 
             var getSatellitesTask = GetSatellites(satId);
             var getTelemetryTask = GetTelemetryRows(satId);
