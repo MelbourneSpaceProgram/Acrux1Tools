@@ -12,7 +12,12 @@ namespace Acrux1Payloads
         public static readonly double VoltageMaxValue = 20;
         public static readonly double CurrentMaxValue = 20;
         public static readonly double TemperatureMaxValue = 128;
-        public static readonly short ShortErrorFloorValue = short.MinValue + 1;
+        public static readonly short ShortErrorValue = short.MinValue;
+
+        // ACRUX-1 contains a bug that causes all negative temperatures to be read as -128C, which is then transmitted as -32767.
+        // (TL;DR Ben forgot to clear a sign bit)
+        //
+        public static readonly short TemperatureNegativeBugValue = short.MinValue + 1;
 
         public static BeaconData DecodeBeacon(byte[] payload)
         {
@@ -115,8 +120,8 @@ namespace Acrux1Payloads
             return beaconData;
         }
 
-        private static double? ShortToVoltage(short voltageRaw) => voltageRaw <= ShortErrorFloorValue ? (double?)null : voltageRaw * VoltageMaxValue / short.MaxValue;
-        private static double? ShortToCurrent(short currentRaw) => currentRaw <= ShortErrorFloorValue ? (double?)null : currentRaw * CurrentMaxValue / short.MaxValue;
-        private static double? ShortToTemperature(short temperatureRaw) => temperatureRaw <= ShortErrorFloorValue ? (double?)null : temperatureRaw * TemperatureMaxValue / short.MaxValue;
+        private static double? ShortToVoltage(short voltageRaw) => voltageRaw == ShortErrorValue ? (double?)null : voltageRaw * VoltageMaxValue / short.MaxValue;
+        private static double? ShortToCurrent(short currentRaw) => currentRaw == ShortErrorValue ? (double?)null : currentRaw * CurrentMaxValue / short.MaxValue;
+        private static double? ShortToTemperature(short temperatureRaw) => temperatureRaw == ShortErrorValue ? (double?)null : temperatureRaw * TemperatureMaxValue / short.MaxValue;
     }
 }
