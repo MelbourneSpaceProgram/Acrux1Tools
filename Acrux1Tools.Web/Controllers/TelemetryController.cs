@@ -13,6 +13,7 @@ using CsvHelper;
 using Microsoft.Extensions.Caching.Memory;
 using System.Globalization;
 using Acrux1Tools.Web.Configuration;
+using SatnogsApi.Models.SatnogsDb;
 
 namespace Acrux1Tools.Web.Controllers
 {

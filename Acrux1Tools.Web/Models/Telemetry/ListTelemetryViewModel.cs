@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Acrux1Payloads;
 using Acrux1Tools.Web.Helpers;
 using SatnogsApi;
+using SatnogsApi.Models.SatnogsDb;
 
 namespace Acrux1Tools.Web.Models.Telemetry
 {
