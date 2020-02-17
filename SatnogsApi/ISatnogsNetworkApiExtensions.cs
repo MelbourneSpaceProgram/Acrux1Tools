@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Refit;
 using SatnogsApi.Models.SatnogsNetwork;
 
 namespace SatnogsApi
 {
     public static class ISatnogsNetworkApiExtensions
     {
-        public static async Task<List<ObservationEntry>> GetAllObservations(this ISatnogsNetworkApi api, int satelliteId, IEnumerable<ObservationEntry> previousObservations = null, int maxPages = 1024, int concurrentPages = 64)
+        public static async Task<List<ObservationEntry>> GetAllObservations(this ISatnogsNetworkApi api, int satelliteId, string vettedStatus = null, IEnumerable<ObservationEntry> previousObservations = null, int maxPages = 1024, int concurrentPages = 32)
         {
             // There are two ways to retrieve all observations:
             //
@@ -48,7 +50,7 @@ namespace SatnogsApi
 
                 for (int j = 0; j < concurrentPages; j++)
                 {
-                    var task = api.GetObservations(satelliteId, i + j);
+                    var task = api.GetObservations(null, satelliteId, vettedStatus, i + j);
                     tasks.Add(task);
                 }
 
@@ -78,7 +80,7 @@ namespace SatnogsApi
                             }
                         }
                     }
-                    catch (Exception ex) when (ex.Message.Contains("404"))
+                    catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                     {
                         end = true;
                     }
