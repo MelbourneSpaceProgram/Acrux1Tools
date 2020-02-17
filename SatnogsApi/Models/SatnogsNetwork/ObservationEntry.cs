@@ -204,6 +204,26 @@ namespace SatnogsApi.Models.SatnogsNetwork
             [Display(Name = "Payload Demod Url")]
             public string PayloadDemodUrl { get; set; }
 
+            public string ResourceName {
+                get {
+
+                    //
+                    // Try to parse the time out of the Url
+                    //
+                    // An example of what the Url will look like:
+                    // "http://network.satnogs.org/media/data_obs/1592320/data_1592320_2020-01-25T07-13-14"
+
+                    if (Uri.TryCreate(this.PayloadDemodUrl, UriKind.RelativeOrAbsolute, out Uri payloadUri))
+                    {
+                        return payloadUri.Segments.LastOrDefault();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
             [JsonIgnore]
             [Display(Name = "Timestamp")]
             public DateTimeOffset? Timestamp {
@@ -215,10 +235,11 @@ namespace SatnogsApi.Models.SatnogsNetwork
                     // An example of what the Url will look like:
                     // "http://network.satnogs.org/media/data_obs/1592320/data_1592320_2020-01-25T07-13-14"
 
-                    if (Uri.TryCreate(this.PayloadDemodUrl, UriKind.RelativeOrAbsolute, out Uri payloadUri))
+                    string resourceName = this.ResourceName;
+
+                    if (resourceName != null)
                     {
-                        string fileName = payloadUri.Segments.LastOrDefault();
-                        var matches = Regex.Match(fileName, "data_\\d*_(.*)");
+                        var matches = Regex.Match(resourceName, "data_\\d*_(.*)");
                         if (matches.Success && matches.Groups[1].Success)
                         {
                             string dateTimeString = matches.Groups[1].Value;

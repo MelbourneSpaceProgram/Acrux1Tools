@@ -14,23 +14,31 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Globalization;
 using Acrux1Tools.Web.Configuration;
 using SatnogsApi.Models.SatnogsDb;
+using SatnogsApi.Models.SatnogsNetwork;
+using System.Net.Http;
 
 namespace Acrux1Tools.Web.Controllers
 {
     public class TelemetryController : Controller
     {
-        private readonly ISatnogsDbApi satnogsApi;
+        private readonly ISatnogsDbApi satnogsDbApi;
+        private readonly ISatnogsNetworkApi satnogsNetworkApi;
         private readonly IMemoryCache memoryCache;
         private readonly ApplicationSettings settings;
 
-        public TelemetryController(ISatnogsDbApi satnogsApi, IMemoryCache memoryCache, ApplicationSettings settings)
+        public TelemetryController(
+            ISatnogsDbApi satnogsDbApi,
+            ISatnogsNetworkApi satnogsNetworkApi,
+            IMemoryCache memoryCache,
+            ApplicationSettings settings)
         {
-            this.satnogsApi = satnogsApi;
+            this.satnogsDbApi = satnogsDbApi;
+            this.satnogsNetworkApi = satnogsNetworkApi;
             this.memoryCache = memoryCache;
             this.settings = settings;
         }
 
-        public async Task<IActionResult> Index(int? satelliteId)
+        public async Task<IActionResult> Index(int? satelliteId, int pageLimit = 150)
         {
             int satId = satelliteId ?? settings.DefaultSatelliteId;
 
@@ -39,15 +47,15 @@ namespace Acrux1Tools.Web.Controllers
 
             (List<SatelliteEntry> satellites, DateTimeOffset satLastUpdated) = await getSatellitesTask;
 
-            List<TelemetryRow> telemetry;
+            List<TelemetryRow> telemetries;
             DateTimeOffset lastUpdated;
             try
             {
-                (telemetry, lastUpdated) = await getTelemetryTask;
+                (telemetries, lastUpdated) = await getTelemetryTask;
             }
             catch (Exception ex)
             {
-                telemetry = new List<TelemetryRow>();
+                telemetries = new List<TelemetryRow>();
                 lastUpdated = default;
 
                 ViewBag.Error = $"Could not get telemetry. {ex.Message}";
@@ -74,42 +82,64 @@ namespace Acrux1Tools.Web.Controllers
             {
                 SatelliteId = satId,
                 Satellite = satellite,
-                Telemetry = telemetry,
+                Telemetries = telemetries.Take(pageLimit).ToList(),
+                PageLimit = pageLimit,
                 LastUpdated = lastUpdated
             };
 
             return View(viewModel);
         }
 
-        private async Task<(List<TelemetryRow> Telemetry, DateTimeOffset LastUpdated)> GetTelemetryRows(int satelliteId)
+        private async Task<(List<TelemetryRow> Telemetries, DateTimeOffset LastUpdated)> GetTelemetryRows(int satelliteId)
         {
             if (memoryCache.TryGetValue(GetTelemetryCacheKey(satelliteId), out TelemetryCacheEntry cachedTelemetryEntry))
             {
                 return (cachedTelemetryEntry.Telemetries, cachedTelemetryEntry.Created);
             }
 
-            var telemetryEntries = await satnogsApi.GetAllTelemetry(satelliteId);
+            // Get the observations for the satellite
+            //List<ObservationEntry> observationEntries = (await satnogsNetworkApi.GetAllObservations(satelliteId, "good", cachedTelemetryEntry?.Telemetries?.GroupBy(te => te.Observation).Select(g => g.Key)))
+            List<ObservationEntry> observationEntries = (await satnogsNetworkApi.GetAllObservations(satelliteId, "good"))
+                .Where(oe => oe.DemodData.Any())
+                .ToList();
 
-            List<TelemetryRow> freshTelemetry = telemetryEntries.Select(t =>
-                {
-                    var fecResult = FecHelpers.DecodePayload(t.Frame, 16, 0, false);
-                    var beaconDecoded = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected);
-                    return new TelemetryRow()
-                    {
-                        SatnogsTelemetry = t,
-                        FecDecodeResult = fecResult,
-                        Acrux1Beacon = beaconDecoded
-                    };
-                }).OrderByDescending(tr => tr.SatnogsTelemetry.Timestamp).ToList();
+            List<TelemetryRow> telemetryRows = (await Task.WhenAll(observationEntries.Select(oe => GetTelemetryRowsForObservation(oe))))
+                .SelectMany(l => l)
+                .OrderByDescending(tr => tr.DemodData?.Timestamp)
+                .ToList();
 
-            cachedTelemetryEntry = new TelemetryCacheEntry(freshTelemetry);
-            memoryCache.Set(GetTelemetryCacheKey(satelliteId), cachedTelemetryEntry, TimeSpan.FromMinutes(5));
+            TelemetryCacheEntry telemetryEntry = new TelemetryCacheEntry(telemetryRows);
 
-            return (cachedTelemetryEntry.Telemetries, cachedTelemetryEntry.Created);
+            if (telemetryEntry.Telemetries.Count > 0)
+            {
+                memoryCache.Set(GetTelemetryCacheKey(satelliteId), telemetryEntry, TimeSpan.FromMinutes(30));
+            }
+
+            return (telemetryEntry.Telemetries, telemetryEntry.Created);
         }
 
-        private static string GetTelemetryCacheKey(int satelliteId) => $"Telemetry-cache-{satelliteId}";
-        private static string GetSatelliteCacheKey(int? noradCatId) => $"Satellite-cache-{noradCatId?.ToString() ?? "ALL"}";
+        private Task<TelemetryRow[]> GetTelemetryRowsForObservation(ObservationEntry observationEntry) {
+            return Task.WhenAll(observationEntry.DemodData.Select(dde => GetTelemetryRowForDemodedData(observationEntry, dde)));
+        }
+
+        private async Task<TelemetryRow> GetTelemetryRowForDemodedData(ObservationEntry observationEntry, ObservationEntry.DemodDataEntry demodedData) {
+            HttpContent httpContents = await satnogsNetworkApi.GetObservationData(observationEntry.Id, demodedData.ResourceName);
+            byte[] data = await httpContents.ReadAsByteArrayAsync();
+
+            var fecResult = FecHelpers.DecodePayload(data, 16, 0, false);
+            var beaconDecoded = BeaconDecoder.DecodeBeacon(fecResult.PayloadCorrected ?? fecResult.PayloadUncorrected);
+
+            return new TelemetryRow()
+            {
+                Observation = observationEntry,
+                DemodData = demodedData,
+                FecDecodeResult = fecResult,
+                Acrux1Beacon = beaconDecoded
+            };
+        }
+
+        private static string GetTelemetryCacheKey(int satelliteId) => $"Telemetry-{satelliteId}";
+        private static string GetSatelliteCacheKey(int? noradCatId) => $"Satellite-{noradCatId?.ToString() ?? "ALL"}";
 
         private async Task<(List<SatelliteEntry> Satellites, DateTimeOffset LastUpdated)> GetSatellites(int? noradCatId)
         {
@@ -119,7 +149,7 @@ namespace Acrux1Tools.Web.Controllers
                 return (satelliteCacheEntry.Satellites, satelliteCacheEntry.Created);
             }
 
-            var satelliteEntries = await satnogsApi.GetSatellites(noradCatId);
+            var satelliteEntries = await satnogsDbApi.GetSatellites(noradCatId);
 
             satelliteCacheEntry = new SatelliteCacheEntry(satelliteEntries);
             memoryCache.Set(GetSatelliteCacheKey(noradCatId), satelliteEntries, TimeSpan.FromMinutes(5));
@@ -161,7 +191,7 @@ namespace Acrux1Tools.Web.Controllers
         {
             Stream stream = new MemoryStream();
 
-            var telemetry = (await GetTelemetryRows(satelliteId)).Telemetry.OrderBy(tr => tr.SatnogsTelemetry.Timestamp).ToList();
+            var telemetry = (await GetTelemetryRows(satelliteId)).Telemetries.OrderBy(tr => tr.DemodData.Timestamp).ToList();
 
             if (telemetry.Count <= 0)
             {

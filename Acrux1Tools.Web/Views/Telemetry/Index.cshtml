@@ -19,12 +19,12 @@
 <h6>Telemetry last updated @Html.DisplayFor(model => model.LastUpdated)</h6>
 
 @{
-    Acrux1Tools.Web.Models.Telemetry.TelemetryRow latestRow = Model.Telemetry.OrderByDescending(t => t.SatnogsTelemetry.Timestamp).FirstOrDefault();
+    Acrux1Tools.Web.Models.Telemetry.TelemetryRow latestRow = Model.Telemetries.OrderByDescending(t => t.DemodData.Timestamp).FirstOrDefault();
 }
 
 @if (latestRow != null)
 {
-    <h6>Telemetry last received @Html.DisplayFor(model => latestRow.SatnogsTelemetry.Timestamp) (@((DateTimeOffset.Now - latestRow.SatnogsTelemetry.Timestamp).TotalHours.ToString("0.00")) hours ago) from @Html.DisplayFor(model => latestRow.SatnogsTelemetry.Observer)</h6>
+    <h6>Telemetry last received @Html.DisplayFor(model => latestRow.DemodData.Timestamp) (@((DateTimeOffset.Now - latestRow.DemodData.Timestamp)?.TotalHours.ToString("0.00") ?? "-1") hours ago) from @Html.DisplayFor(model => latestRow.Observation.StationName)</h6>
 }
 
 @if (ViewBag.Error != null)
@@ -39,13 +39,15 @@ else
         Download full telemetry as CSV
     </a>
 
+    <h3>Showing last @Model.PageLimit telemetry rows</h3>
+
     <table class="table">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Telemetry[0].FecDecodeResult.Success)</th>
-                <th>@Html.DisplayNameFor(model => model.Telemetry[0].FecDecodeResult.ErrorsCorrectedCount)</th>
-                <th>@Html.DisplayNameFor(model => model.Telemetry[0].SatnogsTelemetry.Observer)</th>
-                <th>@Html.DisplayNameFor(model => model.Telemetry[0].SatnogsTelemetry.Timestamp)</th>
+                <th>@Html.DisplayNameFor(model => model.Telemetries[0].FecDecodeResult.Success)</th>
+                <th>@Html.DisplayNameFor(model => model.Telemetries[0].FecDecodeResult.ErrorsCorrectedCount)</th>
+                <th>@Html.DisplayNameFor(model => model.Telemetries[0].Observation.StationName)</th>
+                <th>@Html.DisplayNameFor(model => model.Telemetries[0].DemodData.Timestamp)</th>
                 <th>Dest Callsign</th>
                 <th>Src Callsign</th>
                 <th>TX Count</th>
@@ -59,7 +61,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Telemetry)
+            @foreach (var item in Model.Telemetries)
             {
                 <tr>
                     <td>
@@ -69,10 +71,10 @@ else
                         @Html.DisplayFor(model => item.FecDecodeResult.ErrorsCorrectedCount)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.SatnogsTelemetry.Observer)
+                        @Html.DisplayFor(model => item.Observation.StationName)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.SatnogsTelemetry.Timestamp)
+                        @Html.DisplayFor(model => item.DemodData.Timestamp)
                     </td>
                     <td>
                         @Html.DisplayFor(model => item.Acrux1Beacon.DestinationCallsign)
